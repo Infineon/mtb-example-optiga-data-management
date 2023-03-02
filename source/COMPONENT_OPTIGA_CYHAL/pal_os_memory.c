@@ -1,15 +1,15 @@
 /******************************************************************************
-* File Name:   heap_usage.c
+* File Name:   pal_os_memory.c
 *
-* Description: This file contains the code for printing heap usage.
-*              Supports only GCC_ARM compiler. Define PRINT_HEAP_USAGE for
-*              printing the heap usage numbers.
+* Description: This file contains part of the Platform Abstraction Layer.
+*              This is a platform specific file, in case you have a different
+*              memmory allocation functions implement them here.
 *
 * Related Document: See README.md
 *
 *
 *******************************************************************************
-* Copyright 2021-2023, Cypress Semiconductor Corporation (an Infineon company) or
+* Copyright 2020-2023, Cypress Semiconductor Corporation (an Infineon company) or
 * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
 *
 * This software, including source code, documentation and related
@@ -44,58 +44,33 @@
 /*******************************************************************************
  * Header file includes
  ******************************************************************************/
-#include <stdint.h>
-#include <inttypes.h>
-#include <stdio.h>
-
-/* ARM compiler also defines __GNUC__ */
-#if defined (__GNUC__) && !defined(__ARMCC_VERSION)
-#include <malloc.h>
-#endif /* #if defined (__GNUC__) && !defined(__ARMCC_VERSION) */
-
-
-/*******************************************************************************
- * Macros
- ******************************************************************************/
-#define TO_KB(size_bytes)  ((float)(size_bytes)/1024)
-
+#include "optiga/pal/pal_os_memory.h"
 
 /*******************************************************************************
  * Function Definitions
  ******************************************************************************/
-
-/*******************************************************************************
-* Function Name: print_heap_usage
-********************************************************************************
-* Summary:
-* Prints the available heap and utilized heap by using mallinfo().
-*
-*******************************************************************************/
-void print_heap_usage(char *msg)
+void * pal_os_malloc(uint32_t block_size)
 {
-    /* ARM compiler also defines __GNUC__ */
-#if defined(PRINT_HEAP_USAGE) && defined (__GNUC__) && !defined(__ARMCC_VERSION)
-    struct mallinfo mall_info = mallinfo();
-
-    extern uint8_t __HeapBase;  /* Symbol exported by the linker. */
-    extern uint8_t __HeapLimit; /* Symbol exported by the linker. */
-
-    uint8_t* heap_base = (uint8_t *)&__HeapBase;
-    uint8_t* heap_limit = (uint8_t *)&__HeapLimit;
-    uint32_t heap_size = (uint32_t)(heap_limit - heap_base);
-
-    printf("\r\n\n********** Heap Usage **********\r\n");
-    printf(msg);
-    printf("\r\nTotal available heap        : %"PRIu32" bytes/%.2f KB\r\n", heap_size, TO_KB(heap_size));
-
-    printf("Maximum heap utilized so far: %u bytes/%.2f KB, %.2f%% of available heap\r\n",
-            mall_info.arena, TO_KB(mall_info.arena), ((float) mall_info.arena * 100u)/heap_size);
-
-    printf("Heap in use at this point   : %u bytes/%.2f KB, %.2f%% of available heap\r\n",
-            mall_info.uordblks, TO_KB(mall_info.uordblks), ((float) mall_info.uordblks * 100u)/heap_size);
-
-    printf("********************************\r\n\n");
-#endif /* #if defined(PRINT_HEAP_USAGE) && defined (__GNUC__) && !defined(__ARMCC_VERSION) */
+    return (malloc(block_size));
 }
 
-/* [] END OF FILE */
+void * pal_os_calloc(uint32_t number_of_blocks , uint32_t block_size)
+{
+    return (calloc(number_of_blocks, block_size));
+}
+
+void pal_os_free(void * p_block)
+{
+    free(p_block);
+}
+
+void pal_os_memcpy(void * p_destination, const void * p_source, uint32_t size)
+{
+    memcpy(p_destination, p_source, size);
+}
+
+void pal_os_memset(void * p_buffer, uint32_t value, uint32_t size)
+{
+    memset(p_buffer, (int32_t)value, size);
+}
+

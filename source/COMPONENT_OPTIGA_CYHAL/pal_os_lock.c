@@ -1,15 +1,15 @@
 /******************************************************************************
-* File Name:   heap_usage.c
+* File Name:   pal_os_lock.c
 *
-* Description: This file contains the code for printing heap usage.
-*              Supports only GCC_ARM compiler. Define PRINT_HEAP_USAGE for
-*              printing the heap usage numbers.
+* Description: This file contains part of the Platform Abstraction Layer.
+*              This is a platform specific file. The function here are not 
+*              really used by the host library (mw) itself
 *
 * Related Document: See README.md
 *
 *
 *******************************************************************************
-* Copyright 2021-2023, Cypress Semiconductor Corporation (an Infineon company) or
+* Copyright 2020-2023, Cypress Semiconductor Corporation (an Infineon company) or
 * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
 *
 * This software, including source code, documentation and related
@@ -44,58 +44,56 @@
 /*******************************************************************************
  * Header file includes
  ******************************************************************************/
-#include <stdint.h>
-#include <inttypes.h>
-#include <stdio.h>
-
-/* ARM compiler also defines __GNUC__ */
-#if defined (__GNUC__) && !defined(__ARMCC_VERSION)
-#include <malloc.h>
-#endif /* #if defined (__GNUC__) && !defined(__ARMCC_VERSION) */
-
-
-/*******************************************************************************
- * Macros
- ******************************************************************************/
-#define TO_KB(size_bytes)  ((float)(size_bytes)/1024)
-
+#include "optiga/pal/pal_os_lock.h"
 
 /*******************************************************************************
  * Function Definitions
  ******************************************************************************/
-
-/*******************************************************************************
-* Function Name: print_heap_usage
-********************************************************************************
-* Summary:
-* Prints the available heap and utilized heap by using mallinfo().
-*
-*******************************************************************************/
-void print_heap_usage(char *msg)
+void pal_os_lock_create(pal_os_lock_t * p_lock, uint8_t lock_type)
 {
-    /* ARM compiler also defines __GNUC__ */
-#if defined(PRINT_HEAP_USAGE) && defined (__GNUC__) && !defined(__ARMCC_VERSION)
-    struct mallinfo mall_info = mallinfo();
-
-    extern uint8_t __HeapBase;  /* Symbol exported by the linker. */
-    extern uint8_t __HeapLimit; /* Symbol exported by the linker. */
-
-    uint8_t* heap_base = (uint8_t *)&__HeapBase;
-    uint8_t* heap_limit = (uint8_t *)&__HeapLimit;
-    uint32_t heap_size = (uint32_t)(heap_limit - heap_base);
-
-    printf("\r\n\n********** Heap Usage **********\r\n");
-    printf(msg);
-    printf("\r\nTotal available heap        : %"PRIu32" bytes/%.2f KB\r\n", heap_size, TO_KB(heap_size));
-
-    printf("Maximum heap utilized so far: %u bytes/%.2f KB, %.2f%% of available heap\r\n",
-            mall_info.arena, TO_KB(mall_info.arena), ((float) mall_info.arena * 100u)/heap_size);
-
-    printf("Heap in use at this point   : %u bytes/%.2f KB, %.2f%% of available heap\r\n",
-            mall_info.uordblks, TO_KB(mall_info.uordblks), ((float) mall_info.uordblks * 100u)/heap_size);
-
-    printf("********************************\r\n\n");
-#endif /* #if defined(PRINT_HEAP_USAGE) && defined (__GNUC__) && !defined(__ARMCC_VERSION) */
+    p_lock->type = lock_type;
+    p_lock->lock = 0;
 }
 
-/* [] END OF FILE */
+//lint --e{715} suppress "p_lock is not used here as it is placeholder for future." 
+//lint --e{818} suppress "Not declared as pointer as nothing needs to be updated in the pointer."
+void pal_os_lock_destroy(pal_os_lock_t * p_lock)
+{
+    
+}
+
+pal_status_t pal_os_lock_acquire(pal_os_lock_t * p_lock)
+{
+    pal_status_t return_status = PAL_STATUS_FAILURE;
+
+    if (!(p_lock->lock))
+    {
+        p_lock->lock++;
+        if (1 != p_lock->lock)
+        {
+            p_lock->lock--;
+        }
+        return_status = PAL_STATUS_SUCCESS;
+    }
+    return return_status;
+}
+
+void pal_os_lock_release(pal_os_lock_t * p_lock)
+{
+    if (0 != p_lock->lock)
+    {
+        p_lock->lock--;
+    }
+}
+
+void pal_os_lock_enter_critical_section()
+{
+}
+
+void pal_os_lock_exit_critical_section()
+{
+}
+
+/**
+* @}
+*/

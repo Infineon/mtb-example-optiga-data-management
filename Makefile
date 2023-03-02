@@ -27,6 +27,13 @@
 ################################################################################
 # Basic Configuration
 ################################################################################
+#Type of ModusToolbox Makefile Options include:
+#
+#COMBINED    -- Top Level Makefile usually for single standalone application
+#APPLICATION -- Top Level Makefile usually for multi project application
+#PROJECT     -- Project Makefile under Application
+#
+MTB_TYPE=COMBINED
 
 # Target board/hardware (BSP).
 # To change the target, it is recommended to use the Library manager 
@@ -81,7 +88,7 @@ VERBOSE=
 # ... then code in directories named COMPONENT_foo and COMPONENT_bar will be
 # added to the build
 #
-COMPONENTS=PSOC6_BAREMETAL
+COMPONENTS=OPTIGA_CYHAL
 
 # Like COMPONENTS, but disable optional code that was enabled by default.
 DISABLE_COMPONENTS=

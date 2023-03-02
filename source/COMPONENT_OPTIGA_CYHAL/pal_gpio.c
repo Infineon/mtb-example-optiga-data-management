@@ -1,15 +1,15 @@
 /******************************************************************************
-* File Name:   heap_usage.c
+* File Name:   pal_i2c.c
 *
-* Description: This file contains the code for printing heap usage.
-*              Supports only GCC_ARM compiler. Define PRINT_HEAP_USAGE for
-*              printing the heap usage numbers.
+* Description: This file contains part of the Platform Abstraction Layer.
+*              This is a platform specific file. This file implements 
+*              the platform abstraction layer APIs for GPIO.
 *
 * Related Document: See README.md
 *
 *
 *******************************************************************************
-* Copyright 2021-2023, Cypress Semiconductor Corporation (an Infineon company) or
+* Copyright 2020-2023, Cypress Semiconductor Corporation (an Infineon company) or
 * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
 *
 * This software, including source code, documentation and related
@@ -44,58 +44,58 @@
 /*******************************************************************************
  * Header file includes
  ******************************************************************************/
-#include <stdint.h>
-#include <inttypes.h>
-#include <stdio.h>
-
-/* ARM compiler also defines __GNUC__ */
-#if defined (__GNUC__) && !defined(__ARMCC_VERSION)
-#include <malloc.h>
-#endif /* #if defined (__GNUC__) && !defined(__ARMCC_VERSION) */
+#include "optiga/pal/pal_ifx_i2c_config.h"
+#include "optiga/pal/pal_gpio.h"
+#include "pal_psoc_gpio_mapping.h"
 
 
-/*******************************************************************************
- * Macros
- ******************************************************************************/
-#define TO_KB(size_bytes)  ((float)(size_bytes)/1024)
-
+#include "cy_pdl.h"
+#include "cyhal.h"
+#include "cybsp.h"
 
 /*******************************************************************************
  * Function Definitions
  ******************************************************************************/
-
-/*******************************************************************************
-* Function Name: print_heap_usage
-********************************************************************************
-* Summary:
-* Prints the available heap and utilized heap by using mallinfo().
-*
-*******************************************************************************/
-void print_heap_usage(char *msg)
+//lint --e{714,715} suppress "This is implemented for overall completion of API"
+pal_status_t pal_gpio_init(const pal_gpio_t * p_gpio_context)
 {
-    /* ARM compiler also defines __GNUC__ */
-#if defined(PRINT_HEAP_USAGE) && defined (__GNUC__) && !defined(__ARMCC_VERSION)
-    struct mallinfo mall_info = mallinfo();
+    pal_status_t cy_hal_status = PAL_STATUS_SUCCESS;
+    pal_psoc_gpio_t* pin_config = (pal_psoc_gpio_t *)p_gpio_context->p_gpio_hw;
+    cy_hal_status = cyhal_gpio_init(pin_config->port_num,
+                                       CYHAL_GPIO_DIR_OUTPUT, 
+                                       CYHAL_GPIO_DRIVE_STRONG, 
+                                       pin_config->init_state);
+    if (CY_RSLT_SUCCESS != cy_hal_status)
+    {
+        cy_hal_status = PAL_STATUS_FAILURE;
+    }
 
-    extern uint8_t __HeapBase;  /* Symbol exported by the linker. */
-    extern uint8_t __HeapLimit; /* Symbol exported by the linker. */
-
-    uint8_t* heap_base = (uint8_t *)&__HeapBase;
-    uint8_t* heap_limit = (uint8_t *)&__HeapLimit;
-    uint32_t heap_size = (uint32_t)(heap_limit - heap_base);
-
-    printf("\r\n\n********** Heap Usage **********\r\n");
-    printf(msg);
-    printf("\r\nTotal available heap        : %"PRIu32" bytes/%.2f KB\r\n", heap_size, TO_KB(heap_size));
-
-    printf("Maximum heap utilized so far: %u bytes/%.2f KB, %.2f%% of available heap\r\n",
-            mall_info.arena, TO_KB(mall_info.arena), ((float) mall_info.arena * 100u)/heap_size);
-
-    printf("Heap in use at this point   : %u bytes/%.2f KB, %.2f%% of available heap\r\n",
-            mall_info.uordblks, TO_KB(mall_info.uordblks), ((float) mall_info.uordblks * 100u)/heap_size);
-
-    printf("********************************\r\n\n");
-#endif /* #if defined(PRINT_HEAP_USAGE) && defined (__GNUC__) && !defined(__ARMCC_VERSION) */
+    return (cy_hal_status);
 }
 
-/* [] END OF FILE */
+//lint --e{714,715} suppress "This is implemented for overall completion of API"
+pal_status_t pal_gpio_deinit(const pal_gpio_t * p_gpio_context)
+{
+    pal_psoc_gpio_t* pin_config = (pal_psoc_gpio_t *)p_gpio_context->p_gpio_hw;
+    cyhal_gpio_free(pin_config->port_num);
+    return (PAL_STATUS_SUCCESS);
+}
+
+void pal_gpio_set_high(const pal_gpio_t * p_gpio_context)
+{
+    if ((p_gpio_context != NULL) && (p_gpio_context->p_gpio_hw != NULL))
+    {
+        pal_psoc_gpio_t* pin_config = (pal_psoc_gpio_t *)p_gpio_context->p_gpio_hw;
+        cyhal_gpio_write(pin_config->port_num, true);
+    }
+}
+
+void pal_gpio_set_low(const pal_gpio_t * p_gpio_context)
+{
+    if ((p_gpio_context != NULL) && (p_gpio_context->p_gpio_hw != NULL))
+    {
+        pal_psoc_gpio_t* pin_config = (pal_psoc_gpio_t *)p_gpio_context->p_gpio_hw;
+        cyhal_gpio_write(pin_config->port_num, false);
+    }
+}
+

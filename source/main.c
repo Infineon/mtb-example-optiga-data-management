@@ -97,8 +97,6 @@ int main(void)
     /* Enable global interrupts */
     __enable_irq();
 
-    pal_init();
-
     result = cy_retarget_io_init(CYBSP_DEBUG_UART_TX, CYBSP_DEBUG_UART_RX, 115200);
     if (result != CY_RSLT_SUCCESS)
     {
@@ -107,9 +105,9 @@ int main(void)
 
 #ifndef PROVISIONING_MODE
     /*
-	  Initialise the chip with this function
-	*/
-	example_optiga_init();
+      Initialise the chip with this function
+    */
+    example_optiga_init();
 
     example_optiga_util_read_data();
     example_optiga_util_write_data();

@@ -1,15 +1,15 @@
 /******************************************************************************
-* File Name:   heap_usage.c
+* File Name:   pal_i2c.c
 *
-* Description: This file contains the code for printing heap usage.
-*              Supports only GCC_ARM compiler. Define PRINT_HEAP_USAGE for
-*              printing the heap usage numbers.
+* Description: This file contains part of the Platform Abstraction Layer.
+*              This is a platform specific file. This file implements 
+*              the platform abstraction layer APIs.
 *
 * Related Document: See README.md
 *
 *
 *******************************************************************************
-* Copyright 2021-2023, Cypress Semiconductor Corporation (an Infineon company) or
+* Copyright 2020-2023, Cypress Semiconductor Corporation (an Infineon company) or
 * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
 *
 * This software, including source code, documentation and related
@@ -44,58 +44,46 @@
 /*******************************************************************************
  * Header file includes
  ******************************************************************************/
-#include <stdint.h>
-#include <inttypes.h>
-#include <stdio.h>
-
-/* ARM compiler also defines __GNUC__ */
-#if defined (__GNUC__) && !defined(__ARMCC_VERSION)
-#include <malloc.h>
-#endif /* #if defined (__GNUC__) && !defined(__ARMCC_VERSION) */
-
+#include "optiga/pal/pal.h"
+#include "optiga/pal/pal_gpio.h"
+#include "optiga/pal/pal_os_event.h"
+#include "optiga/pal/pal_os_timer.h"
+#include "pal_psoc_gpio_mapping.h"
+#include "optiga_lib_config.h"
 
 /*******************************************************************************
- * Macros
+ * Global variables
  ******************************************************************************/
-#define TO_KB(size_bytes)  ((float)(size_bytes)/1024)
+#ifdef OPTIGA_TRUSTM_VDD
+extern pal_gpio_t optiga_vdd_0;
+#endif
 
+#ifdef OPTIGA_TRUSTM_RST
+extern pal_gpio_t optiga_reset_0;
+#endif
 
 /*******************************************************************************
  * Function Definitions
  ******************************************************************************/
-
-/*******************************************************************************
-* Function Name: print_heap_usage
-********************************************************************************
-* Summary:
-* Prints the available heap and utilized heap by using mallinfo().
-*
-*******************************************************************************/
-void print_heap_usage(char *msg)
+pal_status_t pal_init(void)
 {
-    /* ARM compiler also defines __GNUC__ */
-#if defined(PRINT_HEAP_USAGE) && defined (__GNUC__) && !defined(__ARMCC_VERSION)
-    struct mallinfo mall_info = mallinfo();
+    #ifdef OPTIGA_TRUSTM_VDD
+    pal_gpio_init(&optiga_vdd_0);
+    #endif
 
-    extern uint8_t __HeapBase;  /* Symbol exported by the linker. */
-    extern uint8_t __HeapLimit; /* Symbol exported by the linker. */
-
-    uint8_t* heap_base = (uint8_t *)&__HeapBase;
-    uint8_t* heap_limit = (uint8_t *)&__HeapLimit;
-    uint32_t heap_size = (uint32_t)(heap_limit - heap_base);
-
-    printf("\r\n\n********** Heap Usage **********\r\n");
-    printf(msg);
-    printf("\r\nTotal available heap        : %"PRIu32" bytes/%.2f KB\r\n", heap_size, TO_KB(heap_size));
-
-    printf("Maximum heap utilized so far: %u bytes/%.2f KB, %.2f%% of available heap\r\n",
-            mall_info.arena, TO_KB(mall_info.arena), ((float) mall_info.arena * 100u)/heap_size);
-
-    printf("Heap in use at this point   : %u bytes/%.2f KB, %.2f%% of available heap\r\n",
-            mall_info.uordblks, TO_KB(mall_info.uordblks), ((float) mall_info.uordblks * 100u)/heap_size);
-
-    printf("********************************\r\n\n");
-#endif /* #if defined(PRINT_HEAP_USAGE) && defined (__GNUC__) && !defined(__ARMCC_VERSION) */
+    #ifdef OPTIGA_TRUSTM_RST
+    pal_gpio_init(&optiga_reset_0);
+    #endif
+    pal_timer_init();
+    return PAL_STATUS_SUCCESS;
 }
 
-/* [] END OF FILE */
+
+pal_status_t pal_deinit(void)
+{
+    return PAL_STATUS_SUCCESS;
+}
+
+/**
+* @}
+*/
