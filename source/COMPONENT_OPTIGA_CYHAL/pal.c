@@ -9,7 +9,7 @@
 *
 *
 *******************************************************************************
-* Copyright 2020-2023, Cypress Semiconductor Corporation (an Infineon company) or
+* Copyright 2020-2024, Cypress Semiconductor Corporation (an Infineon company) or
 * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
 *
 * This software, including source code, documentation and related
@@ -44,10 +44,10 @@
 /*******************************************************************************
  * Header file includes
  ******************************************************************************/
-#include "optiga/pal/pal.h"
-#include "optiga/pal/pal_gpio.h"
-#include "optiga/pal/pal_os_event.h"
-#include "optiga/pal/pal_os_timer.h"
+#include "include/pal/pal.h"
+#include "include/pal/pal_gpio.h"
+#include "include/pal/pal_os_event.h"
+#include "include/pal/pal_os_timer.h"
 #include "pal_psoc_gpio_mapping.h"
 #include "optiga_lib_config.h"
 

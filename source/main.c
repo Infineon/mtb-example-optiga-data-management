@@ -36,8 +36,8 @@
 #include "cy_retarget_io.h"
 
 #include "optiga_example.h"
-#include "optiga/pal/pal_logger.h"
-#include "optiga/pal/pal.h"
+#include "include/pal/pal_logger.h"
+#include "include/pal/pal.h"
 #include "provisioning_sm.h"
 #include "optiga_lib_config.h"
 
@@ -112,7 +112,7 @@ int main(void)
     example_optiga_util_read_data();
     example_optiga_util_write_data();
     example_optiga_util_update_count();
-    example_optiga_util_protected_update();
+    //example_optiga_util_protected_update();
     example_read_coprocessor_id();
 #else
     while(1)

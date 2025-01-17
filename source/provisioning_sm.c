@@ -34,10 +34,10 @@
 #include "cy_retarget_io.h"
 
 #include "optiga_example.h"
-#include "optiga/pal/pal_logger.h"
-#include "optiga/pal/pal.h"
-#include "optiga/pal/pal_os_event.h"
-#include "optiga/comms/optiga_comms.h"
+#include "include/pal/pal_logger.h"
+#include "include/pal/pal.h"
+#include "include/pal/pal_os_event.h"
+#include "include/comms/optiga_comms.h"
 
 
 #define PEER_DATA_BUFFER             (2000-2)

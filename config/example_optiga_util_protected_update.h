@@ -35,7 +35,7 @@
 * @{
 */
 
-#include "optiga/optiga_lib_config.h"
+#include "include/optiga_lib_config.h"
 #include <stdint.h>
 
 #include "data_object.h"

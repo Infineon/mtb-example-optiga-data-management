@@ -8,7 +8,7 @@
 *
 *
 *******************************************************************************
-* Copyright 2021-2023, Cypress Semiconductor Corporation (an Infineon company) or
+* Copyright 2021-2024, Cypress Semiconductor Corporation (an Infineon company) or
 * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
 *
 * This software, including source code, documentation and related
@@ -43,10 +43,10 @@
 /*******************************************************************************
  * Header file includes
  ******************************************************************************/
-#include "optiga/optiga_util.h"
-#include "optiga/optiga_crypt.h"
+#include "include/optiga_util.h"
+#include "include/optiga_crypt.h"
 
-#include "optiga/pal/pal_os_datastore.h"
+#include "include/pal/pal_os_datastore.h"
 #include "optiga_example.h"
 
 #ifdef OPTIGA_COMMS_SHIELDED_CONNECTION 

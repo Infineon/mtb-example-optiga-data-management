@@ -8,7 +8,7 @@
 *
 *
 *******************************************************************************
-* Copyright 2020-2023, Cypress Semiconductor Corporation (an Infineon company) or
+* Copyright 2020-2024, Cypress Semiconductor Corporation (an Infineon company) or
 * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
 *
 * This software, including source code, documentation and related
@@ -108,7 +108,7 @@ extern "C" {
     /** @brief OPTIGA COMMS shielded connection feature.
      *         To disable the feature, undefine the macro
      */
-    #define OPTIGA_COMMS_SHIELDED_CONNECTION
+//    #define OPTIGA_COMMS_SHIELDED_CONNECTION
 
     /** @brief Default reset protection level for OPTIGA CRYPT and UTIL APIs */
     #define OPTIGA_COMMS_DEFAULT_PROTECTION_LEVEL           OPTIGA_COMMS_NO_PROTECTION

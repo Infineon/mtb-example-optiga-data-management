@@ -11,7 +11,7 @@
 *
 *
 *******************************************************************************
-* Copyright 2021-2023, Cypress Semiconductor Corporation (an Infineon company) or
+* Copyright 2021-2024, Cypress Semiconductor Corporation (an Infineon company) or
 * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
 *
 * This software, including source code, documentation and related
@@ -46,7 +46,7 @@
 /*******************************************************************************
  * Header file includes
  ******************************************************************************/
-#include "optiga/optiga_util.h"
+#include "include/optiga_util.h"
 #include "optiga_example.h"
 #include "config/example_optiga_util_protected_update.h"
 
